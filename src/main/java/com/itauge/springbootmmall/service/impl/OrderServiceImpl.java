@@ -56,8 +56,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
             UserAddress oldDefault = userAddressMapper.selectOne(wrapper);
 
-            oldDefault.setIsdefault(0);
-            userAddressMapper.updateById(oldDefault);
+            if (oldDefault != null){
+                oldDefault.setIsdefault(0);
+                userAddressMapper.updateById(oldDefault);
+            }
             userAddressMapper.insert(userAddress);
             orders.setUserAddress(address);
 

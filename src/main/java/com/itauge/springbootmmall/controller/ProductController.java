@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,10 +44,15 @@ public class ProductController {
                              HttpSession session){
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("productList");
+        User user = (User) session.getAttribute("user");
+
+        if (user == null){
+            modelAndView.addObject("cartList",new ArrayList<>());
+        }else{
+            modelAndView.addObject("cartList",cartService.findAllCartVOByUserId(user.getId()));
+        }
         modelAndView.addObject("productList",productService.findByCategoryId(id,type));
         modelAndView.addObject("list",productCategoryService.getAllProductCategoryVO());
-        User user = (User) session.getAttribute("user");
-        modelAndView.addObject("cartList",cartService.findAllCartVOByUserId(user.getId()));
         return modelAndView;
     }
 
@@ -57,7 +63,11 @@ public class ProductController {
         modelAndView.addObject("product",productService.getById(id));
         modelAndView.addObject("list",productCategoryService.getAllProductCategoryVO());
         User user = (User) session.getAttribute("user");
-        modelAndView.addObject("cartList",cartService.findAllCartVOByUserId(user.getId()));
+        if (user == null){
+            modelAndView.addObject("cartList",new ArrayList<>());
+        }else{
+            modelAndView.addObject("cartList",cartService.findAllCartVOByUserId(user.getId()));
+        }
         return modelAndView;
     }
 
